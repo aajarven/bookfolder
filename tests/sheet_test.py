@@ -21,10 +21,10 @@ from bookfolder.sheet import Sheet
     ]
 )
 def test_create_sheet_has_correct_folds(folds):
-    sheet = Sheet(folds)
+    sheet = Sheet(folds, measurement_interval=0.1)
     assert set(sheet.folds) == set(folds)
 
 
 def test_create_sheet_sorts_folds():
-    sheet = Sheet([1, 40, 2, 45, 3])
+    sheet = Sheet([1, 40, 2, 45, 3], measurement_interval=0.1)
     assert sheet.folds == [1, 2, 3, 40, 45]
