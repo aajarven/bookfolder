@@ -1,5 +1,6 @@
 click
 flake8
+fpdf2
 imageio
 pylint
 pytest
