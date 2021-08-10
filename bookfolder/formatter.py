@@ -34,7 +34,7 @@ class CSVFormatter(Formatter):
             1; 11.025; 11.975
             3; 10; 12.75
         """
-        # pylint disable=arguments-differ
+        # pylint: disable=arguments-differ
 
         if len(separator) == 1:
             separator = separator + " "

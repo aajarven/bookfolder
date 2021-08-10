@@ -7,8 +7,9 @@ import pytest
 from bookfolder.sheet import Sheet
 
 
+# test function names should be self-documenting, i.e. often pretty long
 # pylint: disable=missing-function-docstring
-# test functions should be self-documenting
+# pylint: disable=line-too-long
 
 
 @pytest.mark.parametrize(
