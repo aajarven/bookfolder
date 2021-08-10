@@ -22,6 +22,7 @@ from bookfolder.sheet import Sheet
 )
 def test_create_sheet_has_correct_folds(folds):
     sheet = Sheet(folds, measurement_interval=0.1)
+    assert len(sheet.folds) == len(folds)
     assert set(sheet.folds) == set(folds)
 
 
