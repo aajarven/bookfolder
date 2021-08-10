@@ -11,7 +11,7 @@ class Sheet():
     the separation of which is determined by `measurement_interval`.
     """
 
-    def __init__(self, fold_locations, measurement_interval):
+    def __init__(self, fold_locations, measurement_interval, page_number):
         """
         Create a new bookfolding sheet.
 
@@ -22,6 +22,7 @@ class Sheet():
         self.folds = fold_locations.copy()
         self.folds.sort()
         self.measurement_interval = measurement_interval
+        self.page_number = page_number
 
     def fold_locations_in_mm(self):
         """

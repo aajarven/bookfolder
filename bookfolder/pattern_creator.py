@@ -52,7 +52,9 @@ class PatternCreator():
             self._sheets.append(
                 Sheet(
                     [inversion.index for inversion in inversions],
-                    self.measurement_interval)
+                    self.measurement_interval,
+                    page_number=(column_index * 2 + 1)
+                    )
                 )
 
     def _inversion_points(self, image_column):
