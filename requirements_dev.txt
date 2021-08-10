@@ -1,0 +1,6 @@
+click
+flake8
+imageio
+pylint
+pytest
+pytest-coverage
