@@ -50,3 +50,8 @@ def test_extracted_multicolor_sheets_have_correct_number_of_folds():
 def test_extracted_color_sheets_have_correct_folds_locations():
     creator = PatternCreator("tests/data/color_pattern.png")
     assert creator.sheets()[0].folds == [1, 3, 4, 6, 7]
+
+
+def test_extracing_empty_column():
+    creator = PatternCreator("tests/data/empty_column_pattern.png")
+    assert creator.sheets()[1].folds == []
