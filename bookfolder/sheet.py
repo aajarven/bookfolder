@@ -31,6 +31,14 @@ class Sheet():
         return [round(fold_index * self.measurement_interval, decimals)
                 for fold_index in self.folds]
 
+    def fold_locations_in_cm(self):
+        """
+        Return a list of fold locations in centimeters.
+        """
+        decimals = self._decimal_places(self.measurement_interval)
+        return [round(fold_index * self.measurement_interval * 0.1, decimals+1)
+                for fold_index in self.folds]
+
     def _decimal_places(self, float_number):
         """
         Return the number of digits after the decimal point.
