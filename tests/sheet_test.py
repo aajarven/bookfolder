@@ -29,3 +29,13 @@ def test_has_correct_folds(folds):
 def test_folds_are_sorted():
     sheet = Sheet([1, 40, 2, 45, 3], measurement_interval=0.1)
     assert sheet.folds == [1, 2, 3, 40, 45]
+
+
+def test_fold_locations_in_mm():
+    sheet = Sheet([10, 25, 100, 101], measurement_interval=0.1)
+    assert sheet.fold_locations_in_mm() == [1.0, 2.5, 10.0, 10.1]
+
+
+def test_fold_locations_decimals_affected_by_measument_interval_precision():
+    sheet = Sheet([10, 25, 100, 101], measurement_interval=0.25)
+    assert sheet.fold_locations_in_mm() == [2.5, 6.25, 25.0, 25.25]

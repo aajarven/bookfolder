@@ -22,3 +22,19 @@ class Sheet():
         self.folds = fold_locations.copy()
         self.folds.sort()
         self.measurement_interval = measurement_interval
+
+    def fold_locations_in_mm(self):
+        """
+        Return a list of fold locations in millimeters.
+        """
+        decimals = self._decimal_places(self.measurement_interval)
+        return [round(fold_index * self.measurement_interval, decimals)
+                for fold_index in self.folds]
+
+    def _decimal_places(self, float_number):
+        """
+        Return the number of digits after the decimal point.
+        """
+        # pylint: disable=no-self-use
+        number_str = str(float_number)
+        return number_str[::-1].find('.')
