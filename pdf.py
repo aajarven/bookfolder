@@ -38,9 +38,17 @@ pdf.output('table_with_cells.pdf')
 from bookfolder.pdf import PDFWriter
 from bookfolder.sheet import Sheet
 
-sheets = [Sheet(list(range(1, i*14+1, 14)), measurement_interval=0.25, page_number=i*2+1) for i in range(14)]
+sheets = [
+        Sheet(
+            list(range((i + 5) % 14)),
+            measurement_interval=0.25,
+            page_number=i*2+1
+            )
+        for i in range(35)
+        ]
 
 writer = PDFWriter(sheets)
-writer.add_table_page(["page", "measure, mark, cut and fold at (cm)"])
-writer.add_sheet_rows()
+#writer.add_table_page(["page", "measure, mark, cut and fold at (cm)"])
+#writer.add_sheet_rows()
+writer.create_document(["page", "measure, mark, cut and fold at (cm)"])
 writer.save("tmp/pdf_test.pdf")
