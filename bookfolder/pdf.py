@@ -48,7 +48,8 @@ class PDFWriter():
             if not pageful_of_sheets:
                 break
             self._add_table_page(table_header)
-            self.add_sheet_rows(pageful_of_sheets)
+            for sheet in pageful_of_sheets:
+                self._add_rows_for_sheet(sheet)
 
     def _pageful_of_sheets(self, start_index):
         """
@@ -60,11 +61,14 @@ class PDFWriter():
         selected consecutively, starting from `self.sheets[start_index]`.
         """
         sheets = []
+        rows_required = 0
         for sheet in self.sheets[start_index:]:
-            rows_required = math.ceil(len(sheet.folds) / (self.n_columns - 1))
-            if len(sheets) + rows_required > self.rows_per_page - 1:
+            new_rows_required = math.ceil(
+                len(sheet.folds) / (self.n_columns - 1))
+            if rows_required + new_rows_required > self.rows_per_page - 1:
                 break
             sheets.append(sheet)
+            rows_required += new_rows_required
         return sheets
 
     def _add_table_page(self, table_header):
@@ -122,6 +126,41 @@ class PDFWriter():
             self._add_cell(fold_point)
         self._add_n_empty_cells(self.n_columns - len(sheet.folds) - 1)
         self._add_new_row()
+
+    def _add_rows_for_sheet(self, sheet):
+        """
+        Add one or more data rows representing a single `Sheet`.
+        """
+        n_datum_per_row = self.n_columns - 1
+        fold_indices_per_row = []
+        for i in range(0, len(sheet.folds), n_datum_per_row):
+            fold_indices_per_row.append(
+                range(i, min(i + n_datum_per_row, len(sheet.folds))))
+
+        for current_row_index, fold_indices in enumerate(fold_indices_per_row):
+            if len(fold_indices_per_row) == 1:
+                borders = "TBLR"
+                text = sheet.page_number
+            elif current_row_index == 0:
+                borders = "TLR"
+                text = sheet.page_number
+            elif current_row_index == len(fold_indices_per_row) - 1:
+                borders = "BLR"
+                text = ""
+            else:
+                borders = "LR"
+                text = ""
+            self._add_cell(text, border=borders)
+
+            fold_points_for_row = [
+                sheet.fold_locations_in_cm()[i] for i in fold_indices
+                ]
+
+            for fold_point in fold_points_for_row:
+                self._add_cell(fold_point)
+            self._add_n_empty_cells(
+                self.n_columns - len(fold_points_for_row) - 1)
+            self._add_new_row()
 
     def _add_cell(self, content, border=1, width=None):
         """

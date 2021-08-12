@@ -40,7 +40,7 @@ from bookfolder.sheet import Sheet
 
 sheets = [
         Sheet(
-            list(range((i + 5) % 14)),
+            list(range((i + 5))),
             measurement_interval=0.25,
             page_number=i*2+1
             )
