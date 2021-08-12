@@ -100,23 +100,6 @@ class PDFWriter():
                              "".format(table_header, self.n_columns))
         self._add_new_row()
 
-    def add_sheet_rows(self, sheets=None):
-        """
-        Add a row for each sheet into the table.
-
-        If `sheets` is given, those sheets are added. If not, `self.sheets` are
-        used instead.
-
-        :sheets: `Sheet`s to be added to the table. Default is `self.sheets`.
-        """
-        if sheets is None:
-            sheets = self.sheets
-        for sheet in sheets:
-            if len(sheet.folds) <= self.n_columns:
-                self._add_single_row_sheet(sheet)
-            else:
-                raise ValueError("Very complicated sheets not supported (yet)")
-
     def _add_single_row_sheet(self, sheet):
         """
         Add a data row for a single Sheet
