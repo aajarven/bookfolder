@@ -41,15 +41,34 @@ class PDFWriter():
 
         The resulting document can have multiple pages if the pattern is long.
         """
-        page_start_sheet_index = 0
-        while True:
-            pageful_of_sheets = self._pageful_of_sheets(page_start_sheet_index)
-            page_start_sheet_index += len(pageful_of_sheets)
-            if not pageful_of_sheets:
-                break
+        for pageful_of_sheets in self._sheet_pages():
             self._add_table_page(table_header)
             for sheet in pageful_of_sheets:
                 self._add_rows_for_sheet(sheet)
+
+    def _sheet_pages(self):
+        """
+        Iterate over a lists of sheets, each with one pageful of folds.
+        """
+        start_index = 0
+        while True:
+
+            sheets = []
+            rows_required = 0
+
+            for sheet in self.sheets[start_index:]:
+                new_rows_required = math.ceil(
+                    len(sheet.folds) / (self.n_columns - 1))
+                if rows_required + new_rows_required > self.rows_per_page - 1:
+                    break
+                sheets.append(sheet)
+                rows_required += new_rows_required
+
+            start_index += len(sheets)
+
+            if not sheets:
+                return
+            yield sheets
 
     def _pageful_of_sheets(self, start_index):
         """
