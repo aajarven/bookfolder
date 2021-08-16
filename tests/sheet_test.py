@@ -17,7 +17,9 @@ def sheet_fx():
     """
     A test Sheet factory with overrideable defaults
     """
-    def _sheet(folds=[1, 2, 3], measurement_interval=0.1, page_number=1):
+    def _sheet(folds=None, measurement_interval=0.1, page_number=1):
+        if folds is None:
+            folds = [1, 2, 3]
         return Sheet(folds, measurement_interval, page_number)
     return _sheet
 
