@@ -45,6 +45,14 @@ class PDFWriter():
             for sheet in pageful_of_sheets:
                 self._add_rows_for_sheet(sheet)
 
+    def save(self, output_path):
+        """
+        Write the constructed PDF into a file.
+
+        :output_path: the file in which the PDF file is saved.
+        """
+        self.pdf.output(output_path)
+
     def _sheet_pages(self):
         """
         Iterate over lists of sheets, each with one pageful of folds.
@@ -214,11 +222,3 @@ class PDFWriter():
         Add new row to the table
         """
         self.pdf.ln(self.line_height)
-
-    def save(self, output_path):
-        """
-        Write the constructed PDF into a file.
-
-        :output_path: the file in which the PDF file is saved.
-        """
-        self.pdf.output(output_path)
