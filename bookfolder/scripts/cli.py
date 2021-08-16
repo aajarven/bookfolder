@@ -5,6 +5,7 @@ Command line interface for the bookfolder app.
 import click
 
 from bookfolder.formatter import CSVFormatter
+from bookfolder.pdf import PDFWriter
 from bookfolder.pattern_creator import PatternCreator
 
 
@@ -38,6 +39,24 @@ def csv_pattern(ctx, measurement_interval):
     sheets = pattern_creator.sheets()
     formatter = CSVFormatter(sheets)
     click.echo(formatter.format())
+
+
+@cli.command()
+@click.pass_context
+@click.argument("output_file", type=click.Path())
+@click.option("--measurement-interval",
+              help="Height of one pixel in the IMAGE in millimeters",
+              default=0.25)
+def pdf_pattern(ctx, output_file, measurement_interval):
+    """
+    Generate the pattern from the given IMAGE and save it as a PDF.
+    """
+    image = ctx.obj["image"]
+    pattern_creator = PatternCreator(image, measurement_interval)
+    sheets = pattern_creator.sheets()
+    writer = PDFWriter(sheets)
+    writer.create_document(["page", "measure, mark, cut and fold at (cm)"])
+    writer.save(output_file)
 
 
 if __name__ == "__main__":
