@@ -5,13 +5,17 @@ Command line interface for the bookfolder app.
 import click
 
 from bookfolder.formatter import CSVFormatter
+from bookfolder.pdf import PDFWriter
 from bookfolder.pattern_creator import PatternCreator
 
 
 @click.group()
 @click.argument("image", type=click.Path(exists=True))
+@click.option("--measurement-interval",
+              help="Height of one pixel in the IMAGE in millimeters",
+              default=0.25)
 @click.pass_context
-def cli(ctx, image):
+def cli(ctx, image, measurement_interval):
     """
     Generate a bookfolding pattern from IMAGE
 
@@ -21,23 +25,35 @@ def cli(ctx, image):
     edge of the book.
     """
     ctx.ensure_object(dict)
-    ctx.obj["image"] = image
+
+    pattern_creator = PatternCreator(image, measurement_interval)
+    sheets = pattern_creator.sheets()
+    ctx.obj["sheets"] = sheets
 
 
 @cli.command()
 @click.pass_context
-@click.option("--measurement-interval",
-              help="Height of one pixel in the IMAGE in millimeters",
-              default=0.25)
-def csv_pattern(ctx, measurement_interval):
+def csv_pattern(ctx):
     """
-    Generate the pattern from the given IMAGE and print it in csv format.
+    Show the pattern in csv format
     """
-    image = ctx.obj["image"]
-    pattern_creator = PatternCreator(image, measurement_interval)
-    sheets = pattern_creator.sheets()
+    sheets = ctx.obj["sheets"]
     formatter = CSVFormatter(sheets)
     click.echo(formatter.format())
+
+
+@cli.command()
+@click.pass_context
+@click.argument("output_file", type=click.Path())
+def pdf_pattern(ctx, output_file):
+    """
+    Save the pattern as a PDF file
+    """
+    sheets = ctx.obj["sheets"]
+    writer = PDFWriter(sheets)
+    writer.create_document(["page", "measure, mark, cut and fold at (cm)"])
+    writer.save(output_file)
+    click.echo("Wrote the pattern to {}".format(output_file))
 
 
 if __name__ == "__main__":

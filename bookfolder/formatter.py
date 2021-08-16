@@ -41,9 +41,8 @@ class CSVFormatter(Formatter):
         header = separator.join(["page",
                                  "cut and fold point locations (cm)"])
         csv_lines = [header]
-        for index, sheet in enumerate(self.sheets):
-            page_number = index * 2 + 1
-            column_data = [page_number] + sheet.fold_locations_in_cm()
+        for sheet in self.sheets:
+            column_data = [sheet.page_number] + sheet.fold_locations_in_cm()
             column_data_strs = [str(field) for field in column_data]
             csv_lines.append(separator.join(column_data_strs))
         return "\n".join(csv_lines)

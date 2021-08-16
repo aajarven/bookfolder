@@ -15,9 +15,15 @@ def simple_sheets_fx():
     """
     measurement_interval = 0.1
     return [
-        Sheet([10, 15, 20], measurement_interval=measurement_interval),
-        Sheet([12, 14, 25], measurement_interval=measurement_interval),
-        Sheet([13, 14, 30], measurement_interval=measurement_interval),
+        Sheet([10, 15, 20],
+              measurement_interval=measurement_interval,
+              page_number=1),
+        Sheet([12, 14, 25],
+              measurement_interval=measurement_interval,
+              page_number=3),
+        Sheet([13, 14, 30],
+              measurement_interval=measurement_interval,
+              page_number=5),
         ]
 
 
