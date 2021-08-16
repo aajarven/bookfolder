@@ -48,7 +48,9 @@ class PDFWriter():
 
     def _sheet_pages(self):
         """
-        Iterate over a lists of sheets, each with one pageful of folds.
+        Iterate over lists of sheets, each with one pageful of folds.
+
+        :yields: lists of sheets from self.sheets, one pageful at a time
         """
         start_index = 0
         while True:
@@ -70,26 +72,6 @@ class PDFWriter():
                 return
             yield sheets
 
-    def _pageful_of_sheets(self, start_index):
-        """
-        Return a list with as many `Sheet`s that fit on a page.
-
-        The `Sheet`s are picked from `self.sheets` so that the total number of
-        table rows required to represent them is at most `self.rows_per_page -
-        1` to accomodate all the data and a header row. The `Sheet`s are
-        selected consecutively, starting from `self.sheets[start_index]`.
-        """
-        sheets = []
-        rows_required = 0
-        for sheet in self.sheets[start_index:]:
-            new_rows_required = math.ceil(
-                len(sheet.folds) / (self.n_columns - 1))
-            if rows_required + new_rows_required > self.rows_per_page - 1:
-                break
-            sheets.append(sheet)
-            rows_required += new_rows_required
-        return sheets
-
     def _add_table_page(self, table_header):
         """
         Add a new page to the document and add a table header to that page.
@@ -97,7 +79,13 @@ class PDFWriter():
         :table_header: List of header fields.
         """
         self.pdf.add_page()
+        self._add_header(table_header)
+        self._add_new_row()
 
+    def _add_header(self, table_header):
+        """
+        Write a header to the current page
+        """
         if len(table_header) < self.n_columns:
 
             for i in range(len(table_header) - 1):
@@ -117,43 +105,17 @@ class PDFWriter():
             raise ValueError("Header {} has too many fields: the page only "
                              "fits {} fields"
                              "".format(table_header, self.n_columns))
-        self._add_new_row()
-
-    def _add_single_row_sheet(self, sheet):
-        """
-        Add a data row for a single Sheet
-        """
-        self._add_cell(sheet.page_number)
-        for fold_point in sheet.fold_locations_in_cm():
-            self._add_cell(fold_point)
-        self._add_n_empty_cells(self.n_columns - len(sheet.folds) - 1)
-        self._add_new_row()
 
     def _add_rows_for_sheet(self, sheet):
         """
         Add one or more data rows representing a single `Sheet`.
         """
-        n_datum_per_row = self.n_columns - 1
-        fold_indices_per_row = []
-        for i in range(0, len(sheet.folds), n_datum_per_row):
-            fold_indices_per_row.append(
-                range(i, min(i + n_datum_per_row, len(sheet.folds))))
+        fold_indices_per_row = self._divide_fold_indices_to_rows(sheet)
 
         for current_row_index, fold_indices in enumerate(fold_indices_per_row):
-            if len(fold_indices_per_row) == 1:
-                borders = "TBLR"
-                text = sheet.page_number
-            elif current_row_index == 0:
-                borders = "TLR"
-                text = sheet.page_number
-            elif current_row_index == len(fold_indices_per_row) - 1:
-                borders = "BLR"
-                text = ""
-            else:
-                borders = "LR"
-                text = ""
-            self._add_cell(text, border=borders)
-
+            self._add_page_number_cell(sheet,
+                                       current_row_index,
+                                       len(fold_indices_per_row))
             fold_points_for_row = [
                 sheet.fold_locations_in_cm()[i] for i in fold_indices
                 ]
@@ -163,6 +125,50 @@ class PDFWriter():
             self._add_n_empty_cells(
                 self.n_columns - len(fold_points_for_row) - 1)
             self._add_new_row()
+
+    def _divide_fold_indices_to_rows(self, sheet):
+        """
+        Return a list of lists, each inner list containing the indices of folds
+        for one row.
+
+        Each row has room for `self.n_columns` cells, one of which is reserved
+        for the page number.
+        """
+        n_datum_per_row = self.n_columns - 1
+        fold_indices_for_rows = []
+        for i in range(0, len(sheet.folds), n_datum_per_row):
+            fold_indices_for_rows.append(
+                range(i, min(i + n_datum_per_row, len(sheet.folds))))
+        return fold_indices_for_rows
+
+    def _add_page_number_cell(self, sheet, current_row_index, total_rows):
+        """
+        Add a page number cell for `current_row_index`th row of folds in
+        `sheet`.
+
+        The first row for each sheet contains the page number, while the other
+        page number cells are empty. All page number cells have left and right
+        borders, but only the topmost page number cell has top border and the
+        bottom cell has bottom border.
+
+        :sheet: `Sheet` for which the cell is added
+        :current_row_index: The index of the row for which the page number cell
+                            is to be added
+        :total_rows: Total number of rows required for this page
+        """
+        if total_rows == 1:
+            borders = "TBLR"
+            text = sheet.page_number
+        elif current_row_index == 0:
+            borders = "TLR"
+            text = sheet.page_number
+        elif current_row_index == total_rows - 1:
+            borders = "BLR"
+            text = ""
+        else:
+            borders = "LR"
+            text = ""
+        self._add_cell(text, border=borders)
 
     def _add_cell(self, content, border=1, width=None):
         """
