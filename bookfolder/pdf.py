@@ -12,7 +12,6 @@ class PDFWriter():
     A tool that writes bookfolding Sheet data into a file.
     """
 
-    data_columns = 14
     font = "Times"
     font_size = 10
 
@@ -110,12 +109,13 @@ class PDFWriter():
         """
         Add one or more data rows representing a single `Sheet`.
         """
-        fold_indices_per_row = self._divide_fold_indices_to_rows(sheet)
+        rows_required = self._rows_required(sheet)
 
-        for current_row_index, fold_indices in enumerate(fold_indices_per_row):
+        for current_row_index, fold_indices \
+                in enumerate(self._iterate_fold_rows(sheet)):
             self._add_page_number_cell(sheet,
                                        current_row_index,
-                                       len(fold_indices_per_row))
+                                       rows_required)
             fold_points_for_row = [
                 sheet.fold_locations_in_cm()[i] for i in fold_indices
                 ]
@@ -126,20 +126,29 @@ class PDFWriter():
                 self.n_columns - len(fold_points_for_row) - 1)
             self._add_new_row()
 
-    def _divide_fold_indices_to_rows(self, sheet):
+    def _rows_required(self, sheet):
         """
-        Return a list of lists, each inner list containing the indices of folds
-        for one row.
+        Return the number of rows that are needed to represent the `sheet`
+        """
+        n_datum_per_row = self.n_columns - 1
+        return math.ceil(len(sheet.folds) / n_datum_per_row)
+
+    def _iterate_fold_rows(self, sheet):
+        """
+        Iterate over rows of fold indices.
+
+        Each row is returned as a list of indices for the folds in `sheet` that
+        are to be written on that row.
 
         Each row has room for `self.n_columns` cells, one of which is reserved
         for the page number.
         """
         n_datum_per_row = self.n_columns - 1
-        fold_indices_for_rows = []
         for i in range(0, len(sheet.folds), n_datum_per_row):
-            fold_indices_for_rows.append(
-                range(i, min(i + n_datum_per_row, len(sheet.folds))))
-        return fold_indices_for_rows
+            yield range(
+                    i,
+                    min(i + n_datum_per_row, len(sheet.folds))
+                    )
 
     def _add_page_number_cell(self, sheet, current_row_index, total_rows):
         """
