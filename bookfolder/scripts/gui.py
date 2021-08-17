@@ -7,7 +7,6 @@ from tkinter import messagebox
 from tkinter import ttk
 from tkinter import N, E, S, W
 
-from bookfolder.pdf import PDFWriter
 from bookfolder.pattern_creator import PatternCreator
 
 
@@ -68,10 +67,7 @@ class GeneratePatternFrame():
         """
         pattern_creator = PatternCreator(self.input_path.get(),
                                          self.measurement_interval.get())
-        sheets = pattern_creator.sheets()
-        writer = PDFWriter(sheets)
-        writer.create_document(["page", "measure, mark, cut and fold at (cm)"])
-        writer.save(self.output_path.get())
+        pattern_creator.save_pdf(self.output_path.get())
 
         messagebox.showinfo(
             "Success",
