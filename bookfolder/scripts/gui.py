@@ -29,11 +29,15 @@ class GUI():
         pdf_output = PDFOutput(window)
         generate = GeneratePatternFrame(window, image_input.path,
                                         pdf_output.path)
+        measurement_interval_input = MeasurementIntervalFrame(window)
+        page_number_input = PageNumberFrame(window)
 
         self._add_components_vertically(
             [
                 image_input.frame,
                 pdf_output.frame,
+                measurement_interval_input.frame,
+                page_number_input.frame,
                 generate.frame,
             ])
 
@@ -46,6 +50,62 @@ class GUI():
         # pylint: disable=no-self-use
         for index, component in enumerate(components):
             component.grid(row=index, column=0)
+
+
+class MeasurementIntervalFrame():
+    """
+    Return a Frame with text box for entering page number
+    """
+
+    def __init__(self, parent_window):
+        self._frame = ttk.Frame(parent_window)
+        self._frame.grid(column=0, row=0, sticky=(N, E, S, W))
+        self.measurement_interval = tkinter.DoubleVar(value=0.25)
+
+    @property
+    def frame(self):
+        """
+        Generate the frame and the field within
+        """
+        label = tkinter.Label(
+            self._frame,
+            text="Height of one pixel in mm")
+        label.grid(column=0, row=0, sticky=(W, E))
+
+        measurement_interval_entry = ttk.Entry(
+                self._frame,
+                textvariable=self.measurement_interval)
+        measurement_interval_entry.grid(column=1, row=0, sticky=(E, W))
+
+        return self._frame
+
+
+class PageNumberFrame():
+    """
+    Return a Frame with text box for entering page number
+    """
+
+    def __init__(self, parent_window):
+        self._frame = ttk.Frame(parent_window)
+        self._frame.grid(column=0, row=0, sticky=(N, E, S, W))
+        self.first_page_number = tkinter.IntVar(value=1)
+
+    @property
+    def frame(self):
+        """
+        Generate the frame and the field within
+        """
+        label = tkinter.Label(
+            self._frame,
+            text="Page number of first pattern sheet in the pattern")
+        label.grid(column=0, row=0, sticky=(W, E))
+
+        page_number_entry = ttk.Entry(
+                self._frame,
+                textvariable=self.first_page_number)
+        page_number_entry.grid(column=1, row=0, sticky=(E, W))
+
+        return self._frame
 
 
 class GeneratePatternFrame():
