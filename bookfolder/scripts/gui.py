@@ -27,11 +27,15 @@ class GUI():
 
         image_input = ImageInput(window)
         pdf_output = PDFOutput(window)
-        generate = GeneratePatternFrame(window, image_input.path,
-                                        pdf_output.path)
         measurement_interval_input = MeasurementIntervalFrame(window)
         page_number_input = PageNumberFrame(window)
 
+        generate = GeneratePatternFrame(
+            window,
+            image_input.path,
+            pdf_output.path,
+            measurement_interval_input.measurement_interval,
+            )
         self._add_components_vertically(
             [
                 image_input.frame,
@@ -113,13 +117,14 @@ class GeneratePatternFrame():
     Return a Frame with button to generate the pattern.
     """
 
-    def __init__(self, parent_window, input_path, output_path):
+    def __init__(self, parent_window, input_path, output_path,
+                 measurement_interval):
         self._frame = ttk.Frame(parent_window)
         self._frame.grid(column=0, row=0, sticky=(N, E, S, W))
 
         self.input_path = input_path
         self.output_path = output_path
-        self.measurement_interval = tkinter.DoubleVar(value=0.25)
+        self.measurement_interval = measurement_interval
 
     @property
     def frame(self):
