@@ -23,27 +23,38 @@ class GUI():
         Show the GUI to the user
         """
         window = tkinter.Tk()
+        window.title("Bookfolding Pattern Creator")
         window.grid_columnconfigure(0, weight=1)
 
-        image_input = ImageInput(window)
-        pdf_output = PDFOutput(window)
-        measurement_interval_input = MeasurementIntervalFrame(window)
-        page_number_input = PageNumberFrame(window)
+        outer_frame = tkinter.Frame()
+        outer_frame.grid(padx="8p", pady="8p", sticky=(N, E, S, W))
+        outer_frame.grid_columnconfigure(0, weight=1)
+
+        image_input = ImageInput(outer_frame)
+        pdf_output = PDFOutput(outer_frame)
+        separator = HorizontalSeparator(outer_frame)
+        measurement_interval_input = MeasurementIntervalFrame(outer_frame)
+        page_number_input = PageNumberFrame(outer_frame)
 
         generate = GeneratePatternFrame(
-            window,
+            outer_frame,
             image_input.path,
             pdf_output.path,
             measurement_interval_input.measurement_interval,
             )
+
         self._add_components_vertically(
             [
                 image_input.frame,
                 pdf_output.frame,
+                separator.frame,
                 measurement_interval_input.frame,
                 page_number_input.frame,
                 generate.frame,
             ])
+
+#        for child in window.winfo_children():
+#            child.grid_configure(padx=10, pady=3)
 
         window.mainloop()
 
@@ -56,14 +67,68 @@ class GUI():
             component.grid(row=index, column=0)
 
 
-class MeasurementIntervalFrame():
+class WidgetFrame():
+    """
+    Superclass for widgets within the window.
+    """
+
+    x_padding = "4p"
+    y_padding = "2p"
+    frame_sticky = (N, E, S, W)
+
+    def add_to_grid(self, component, column=0, row=0, padx=None, pady=None,
+                    **kwargs):
+        """
+        Add given `component` to a grid layout.
+        """
+        # pylint: disable=too-many-arguments
+
+        if padx is None:
+            padx = self.x_padding
+        if pady is None:
+            pady = self.y_padding
+
+        component.grid(column=column, row=row, padx=padx, pady=pady, **kwargs)
+
+
+class HorizontalSeparator(WidgetFrame):
+    """
+    Frame containing a horizontal separator
+    """
+
+    y_padding = "5p"
+
+    def __init__(self, parent_window):
+        self._frame = ttk.Frame(parent_window)
+        self._frame.grid(column=0, row=0, sticky=self.frame_sticky)
+
+    @property
+    def frame(self):
+        """
+        Generate the frame and the field within
+        """
+        separator = ttk.Separator(self._frame, orient="horizontal")
+        self.add_to_grid(separator, column=0, row=0, sticky=(E, W))
+        self._frame.columnconfigure(0, weight=1)
+        return self._frame
+
+
+class CustomizationOptionTextInputFrame(WidgetFrame):
+    """
+    Superclass for customization options set via a text input frame
+    """
+    frame_sticky = (N, E, S)
+    field_width = 5
+
+
+class MeasurementIntervalFrame(CustomizationOptionTextInputFrame):
     """
     Return a Frame with text box for entering page number
     """
 
     def __init__(self, parent_window):
         self._frame = ttk.Frame(parent_window)
-        self._frame.grid(column=0, row=0, sticky=(N, E, S, W))
+        self._frame.grid(column=0, row=0, sticky=self.frame_sticky)
         self.measurement_interval = tkinter.DoubleVar(value=0.25)
 
     @property
@@ -74,24 +139,27 @@ class MeasurementIntervalFrame():
         label = tkinter.Label(
             self._frame,
             text="Height of one pixel in mm")
-        label.grid(column=0, row=0, sticky=(W, E))
+        self.add_to_grid(label, column=0, row=0, sticky=(E))
 
         measurement_interval_entry = ttk.Entry(
                 self._frame,
-                textvariable=self.measurement_interval)
-        measurement_interval_entry.grid(column=1, row=0, sticky=(E, W))
+                textvariable=self.measurement_interval,
+                width=self.field_width,
+                )
+        self.add_to_grid(measurement_interval_entry,
+                         column=1, row=0, sticky=(E))
 
         return self._frame
 
 
-class PageNumberFrame():
+class PageNumberFrame(CustomizationOptionTextInputFrame):
     """
     Return a Frame with text box for entering page number
     """
 
     def __init__(self, parent_window):
         self._frame = ttk.Frame(parent_window)
-        self._frame.grid(column=0, row=0, sticky=(N, E, S, W))
+        self._frame.grid(column=0, row=0, sticky=self.frame_sticky)
         self.first_page_number = tkinter.IntVar(value=1)
 
     @property
@@ -102,25 +170,30 @@ class PageNumberFrame():
         label = tkinter.Label(
             self._frame,
             text="Page number of first pattern sheet in the pattern")
-        label.grid(column=0, row=0, sticky=(W, E))
+        label.grid(column=0, row=0, sticky=(E))
 
         page_number_entry = ttk.Entry(
                 self._frame,
-                textvariable=self.first_page_number)
-        page_number_entry.grid(column=1, row=0, sticky=(E, W))
+                textvariable=self.first_page_number,
+                width=self.field_width,
+                )
+        self.add_to_grid(page_number_entry,
+                         column=1, row=0, sticky=(W))
 
         return self._frame
 
 
-class GeneratePatternFrame():
+class GeneratePatternFrame(WidgetFrame):
     """
     Return a Frame with button to generate the pattern.
     """
 
+    y_padding = ("10p", "3p")
+
     def __init__(self, parent_window, input_path, output_path,
                  measurement_interval):
         self._frame = ttk.Frame(parent_window)
-        self._frame.grid(column=0, row=0, sticky=(N, E, S, W))
+        self._frame.grid(column=0, row=0, sticky=self.frame_sticky)
 
         self.input_path = input_path
         self.output_path = output_path
@@ -133,7 +206,7 @@ class GeneratePatternFrame():
         """
         btn = ttk.Button(self._frame, text="Generate",
                          command=self._generate)
-        btn.grid(column=1, row=0, sticky=(E))
+        self.add_to_grid(btn, column=1, row=0, sticky=(E))
         self._frame.columnconfigure(0, weight=1)
 
         return self._frame
@@ -151,7 +224,7 @@ class GeneratePatternFrame():
             "Wrote the pattern to {}".format(self.output_path.get()))
 
 
-class FileIOFrame():
+class FileIOFrame(WidgetFrame):
     """
     Create a frame for selecting a file for input/output.
     """
@@ -161,7 +234,7 @@ class FileIOFrame():
 
     def __init__(self, parent_window):
         self._frame = ttk.Frame(parent_window)
-        self._frame.grid(column=0, row=0, sticky=(N, E, S, W))
+        self._frame.grid(column=0, row=0, sticky=self.frame_sticky)
 
         self.path = tkinter.StringVar()
 
@@ -173,15 +246,16 @@ class FileIOFrame():
         :returns: the created Frame
         """
 
-        label = tkinter.Label(self._frame, text=self.label_text)
-        label.grid(column=0, row=0, sticky=(W, E))
+        label = tkinter.Label(self._frame, text=self.label_text, anchor=E)
+        self.add_to_grid(label, column=0, row=0, sticky=(W, E))
+        self._frame.columnconfigure(0, minsize="100p")
 
         image_textbox = ttk.Entry(self._frame, textvariable=self.path)
-        image_textbox.grid(column=1, row=0, sticky=(E, W))
+        self.add_to_grid(image_textbox, column=1, row=0, sticky=(E, W))
 
         btn_browse = ttk.Button(self._frame, text=self.button_text,
                                 command=self._browse_files)
-        btn_browse.grid(column=2, row=0, sticky=(W))
+        self.add_to_grid(btn_browse, column=2, row=0, sticky=(W))
 
         self._frame.columnconfigure(1, weight=1)
 
