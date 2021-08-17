@@ -25,13 +25,14 @@ class GUI():
         window = tkinter.Tk()
         window.grid_columnconfigure(0, weight=1)
 
-        image_io = ImageInput(window)
-        image_io.create().grid(row=0, column=0)
+        image_input = ImageInput(window)
+        image_input.create().grid(row=0, column=0)
 
-        pdf_io = PDFOutput(window)
-        pdf_io.create().grid(row=1, column=0)
+        pdf_output = PDFOutput(window)
+        pdf_output.create().grid(row=1, column=0)
 
-        generate = GeneratePatternFrame(window, image_io.path, pdf_io.path)
+        generate = GeneratePatternFrame(window, image_input.path,
+                                        pdf_output.path)
         generate.create().grid(row=2, column=0)
 
         window.mainloop()
