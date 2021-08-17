@@ -26,16 +26,26 @@ class GUI():
         window.grid_columnconfigure(0, weight=1)
 
         image_input = ImageInput(window)
-        image_input.create().grid(row=0, column=0)
-
         pdf_output = PDFOutput(window)
-        pdf_output.create().grid(row=1, column=0)
-
         generate = GeneratePatternFrame(window, image_input.path,
                                         pdf_output.path)
-        generate.create().grid(row=2, column=0)
+
+        self._add_components_vertically(
+            [
+                image_input.frame,
+                pdf_output.frame,
+                generate.frame,
+            ])
 
         window.mainloop()
+
+    def _add_components_vertically(self, components):
+        """
+        Add given `components` to a grid on top of each other.
+        """
+        # pylint: disable=no-self-use
+        for index, component in enumerate(components):
+            component.grid(row=index, column=0)
 
 
 class GeneratePatternFrame():
@@ -44,23 +54,24 @@ class GeneratePatternFrame():
     """
 
     def __init__(self, parent_window, input_path, output_path):
-        self.frame = ttk.Frame(parent_window)
-        self.frame.grid(column=0, row=0, sticky=(N, E, S, W))
+        self._frame = ttk.Frame(parent_window)
+        self._frame.grid(column=0, row=0, sticky=(N, E, S, W))
 
         self.input_path = input_path
         self.output_path = output_path
         self.measurement_interval = tkinter.DoubleVar(value=0.25)
 
-    def create(self):
+    @property
+    def frame(self):
         """
         Create the Frame and the button within.
         """
-        btn = ttk.Button(self.frame, text="Generate",
+        btn = ttk.Button(self._frame, text="Generate",
                          command=self._generate)
         btn.grid(column=1, row=0, sticky=(E))
-        self.frame.columnconfigure(0, weight=1)
+        self._frame.columnconfigure(0, weight=1)
 
-        return self.frame
+        return self._frame
 
     def _generate(self):
         """
@@ -84,31 +95,32 @@ class FileIOFrame():
     button_text = "Browse"
 
     def __init__(self, parent_window):
-        self.frame = ttk.Frame(parent_window)
-        self.frame.grid(column=0, row=0, sticky=(N, E, S, W))
+        self._frame = ttk.Frame(parent_window)
+        self._frame.grid(column=0, row=0, sticky=(N, E, S, W))
 
         self.path = tkinter.StringVar()
 
-    def create(self):
+    @property
+    def frame(self):
         """
         Create the Frame and its components.
 
         :returns: the created Frame
         """
 
-        label = tkinter.Label(self.frame, text=self.label_text)
+        label = tkinter.Label(self._frame, text=self.label_text)
         label.grid(column=0, row=0, sticky=(W, E))
 
-        image_textbox = ttk.Entry(self.frame, textvariable=self.path)
+        image_textbox = ttk.Entry(self._frame, textvariable=self.path)
         image_textbox.grid(column=1, row=0, sticky=(E, W))
 
-        btn_browse = ttk.Button(self.frame, text=self.button_text,
+        btn_browse = ttk.Button(self._frame, text=self.button_text,
                                 command=self._browse_files)
         btn_browse.grid(column=2, row=0, sticky=(W))
 
-        self.frame.columnconfigure(1, weight=1)
+        self._frame.columnconfigure(1, weight=1)
 
-        return self.frame
+        return self._frame
 
     def _browse_files(self):
         raise NotImplementedError("Must be implemented in subclasses")
