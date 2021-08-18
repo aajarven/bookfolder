@@ -55,3 +55,22 @@ def test_extracted_color_sheets_have_correct_folds_locations():
 def test_extracing_empty_column():
     creator = PatternCreator("tests/data/empty_column_pattern.png")
     assert creator.sheets()[1].folds == []
+
+
+def test_default_start_page():
+    creator = PatternCreator("tests/data/simple_pattern.png")
+    assert creator.sheets()[0].page_number == 1
+
+
+def test_setting_negative_start_page():
+    creator = PatternCreator("tests/data/simple_pattern.png", start_page=-1)
+    assert creator.sheets()[0].page_number == -1
+    assert creator.sheets()[1].page_number == 1
+    assert creator.sheets()[2].page_number == 3
+
+
+def test_setting_positive_start_page():
+    creator = PatternCreator("tests/data/simple_pattern.png", start_page=200)
+    assert creator.sheets()[0].page_number == 200
+    assert creator.sheets()[1].page_number == 202
+    assert creator.sheets()[2].page_number == 204

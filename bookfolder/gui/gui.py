@@ -46,6 +46,7 @@ class GUI():
             image_input.path,
             pdf_output.path,
             measurement_interval_input.measurement_interval,
+            start_page=page_number_input.first_page_number
             )
 
         self._add_components_vertically(

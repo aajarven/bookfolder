@@ -135,13 +135,15 @@ class GeneratePatternFrame(WidgetFrame):
     y_padding = ("10p", "3p")
 
     def __init__(self, parent_window, input_path, output_path,
-                 measurement_interval):
+                 measurement_interval, start_page):
+        # pylint: disable=too-many-arguments
         self._frame = ttk.Frame(parent_window)
         self._frame.grid(column=0, row=0, sticky=self.frame_sticky)
 
         self.input_path = input_path
         self.output_path = output_path
         self.measurement_interval = measurement_interval
+        self.start_page = start_page
 
     @property
     def frame(self):
@@ -160,7 +162,8 @@ class GeneratePatternFrame(WidgetFrame):
         Generate the PDF pattern and confirm creation to the user.
         """
         pattern_creator = PatternCreator(self.input_path.get(),
-                                         self.measurement_interval.get())
+                                         self.measurement_interval.get(),
+                                         self.start_page.get())
         pattern_creator.save_pdf(self.output_path.get())
 
         messagebox.showinfo(

@@ -12,9 +12,14 @@ from bookfolder.pattern_creator import PatternCreator
 @click.argument("image", type=click.Path(exists=True))
 @click.option("--measurement-interval",
               help="Height of one pixel in the IMAGE in millimeters",
-              default=0.25)
+              default=0.25,
+              type=click.FLOAT)
+@click.option("--start-page",
+              help="The page number of the first sheet in the pattern",
+              default=1,
+              type=click.INT)
 @click.pass_context
-def cli(ctx, image, measurement_interval):
+def cli(ctx, image, measurement_interval, start_page):
     """
     Generate a bookfolding pattern from IMAGE
 
@@ -25,7 +30,7 @@ def cli(ctx, image, measurement_interval):
     """
     ctx.ensure_object(dict)
 
-    pattern_creator = PatternCreator(image, measurement_interval)
+    pattern_creator = PatternCreator(image, measurement_interval, start_page)
     sheets = pattern_creator.sheets()
     ctx.obj["sheets"] = sheets
     ctx.obj["pattern_creator"] = pattern_creator
