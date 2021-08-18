@@ -13,20 +13,24 @@ you can comfortably eyeball the midpoint between two markings, you can use 0.5
 mm instead. For special tools, such as Incra rulers, the interval can be even
 shorter.
 
+If your pattern has less sheets than your book has pages, or the book you use
+has pages without numbers, you can also set a custom start page for the
+pattern, so that the first sheet in the pattern is e.g. page 5 or "page -3".
+
 
 ## Requirements
 
 This software has been tested on Python 3.6, but will likely run on other
-versions of Python 3 too. Required packages are listed in [requirements.txt
-file](requirements.txt).
+versions of Python 3 too. If you use the graphical user interface, you also
+need to have `python3-tkinter` installed.
 
 
 ## Installation
 
 1. Ensure you have [Python](https://www.python.org/downloads/) available on
    your system.
-1. If you intend to use the graphical user interface, you also need  the
-   `python3-tkinter` package
+   - If you intend to use the graphical user interface, you also need  the
+     `python3-tkinter` package
 1. Download this tool either using `git clone` or the "Download ZIP" button
    found under the green "Code" menu. If you downloaded the tool as a zip,
    extract it.
