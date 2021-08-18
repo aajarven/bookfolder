@@ -51,3 +51,8 @@ After installing, you can start the program with command `bookfolder`.
 
 See `bookfolder-cli --help` for information about available commands and their
 invocation.
+
+
+## License
+
+This software is licensed under [GNU General Public License v3.0](LICENSE.md).
