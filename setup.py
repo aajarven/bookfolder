@@ -7,7 +7,7 @@ with open(path.join(current_directory, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name="bookfolder",
-    version="0.4",
+    version="0.5",
     author="Anni Järvenpää",
     description="Convert an image into a bookfolding pattern",
     long_description=long_description,

@@ -58,19 +58,7 @@ need to have `python3-tkinter` installed.
 
 ## Installation
 
-1. Ensure you have [Python](https://www.python.org/downloads/) available on
-   your system.
-   - If you intend to use the graphical user interface, you also need  the
-     `python3-tkinter` package
-1. Download this tool either using `git clone` or the "Download ZIP" button
-   found under the green "Code" menu. If you downloaded the tool as a zip,
-   extract it.
-1. Navigate to the directory to which you downloaded/extracted this tool.
-1. Install the tool using pip:
-    ```
-    pip install .
-    ```
-
+```pip install bookfolder```
 
 ## Usage
 
