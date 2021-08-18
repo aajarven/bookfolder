@@ -7,7 +7,7 @@ with open(path.join(current_directory, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name="bookfolder",
-    version="0.1",
+    version="0.3",
     author="Anni Järvenpää",
     description="Convert an image into a bookfolding pattern",
     long_description=long_description,
@@ -19,6 +19,7 @@ setup(
     install_requires=[
         "click",
         "imageio",
+        "fpdf2",
     ],
     entry_points={
         "console_scripts": [
