@@ -58,9 +58,6 @@ class GUI():
                 generate.frame,
             ])
 
-#        for child in window.winfo_children():
-#            child.grid_configure(padx=10, pady=3)
-
         window.mainloop()
 
     def _add_components_vertically(self, components):
