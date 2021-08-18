@@ -23,7 +23,7 @@ class PatternCreator():
     measurement tool used in the folding process.
     """
 
-    def __init__(self, input_path, measurement_interval=0.25):
+    def __init__(self, input_path, measurement_interval=0.25, start_page=1):
         """
         Initiate the PatternCreator.
 
@@ -33,6 +33,7 @@ class PatternCreator():
         """
         self.input_path = input_path
         self.measurement_interval = measurement_interval
+        self.start_page = start_page
         self._sheets = []
 
     def sheets(self):
@@ -62,7 +63,7 @@ class PatternCreator():
                 Sheet(
                     [inversion.index for inversion in inversions],
                     self.measurement_interval,
-                    page_number=(column_index * 2 + 1)
+                    page_number=(column_index * 2 + self.start_page)
                     )
                 )
 
