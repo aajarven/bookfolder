@@ -6,6 +6,7 @@ from collections import namedtuple
 
 from imageio import imread
 
+from bookfolder.pdf import PDFWriter
 from bookfolder.sheet import Sheet
 
 
@@ -41,6 +42,14 @@ class PatternCreator():
         if not self._sheets:
             self._extract_sheets()
         return self._sheets
+
+    def save_pdf(self, output_file):
+        """
+        Save the created pattern as a PDF file.
+        """
+        writer = PDFWriter(self.sheets())
+        writer.create_document(["page", "measure, mark, cut and fold at (cm)"])
+        writer.save(output_file)
 
     def _extract_sheets(self):
         """

@@ -25,6 +25,8 @@ file](requirements.txt).
 
 1. Ensure you have [Python](https://www.python.org/downloads/) available on
    your system.
+1. If you intend to use the graphical user interface, you also need  the
+   `python3-tkinter` package
 1. Download this tool either using `git clone` or the "Download ZIP" button
    found under the green "Code" menu. If you downloaded the tool as a zip,
    extract it.
@@ -37,5 +39,11 @@ file](requirements.txt).
 
 ## Usage
 
-See `bookfolder --help` for information about available commands and their
+### Windowed mode
+
+After installing, you can start the program with command `bookfolder`.
+
+### Command-line use
+
+See `bookfolder-cli --help` for information about available commands and their
 invocation.
