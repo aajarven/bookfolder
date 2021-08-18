@@ -11,7 +11,8 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "bookfolder = bookfolder.scripts.cli:cli",
+            "bookfolder-cli = bookfolder.scripts.cli:cli",
+            "bookfolder = bookfolder.scripts.gui:start",
         ],
     },
 )

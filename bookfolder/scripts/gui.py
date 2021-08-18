@@ -303,6 +303,13 @@ class PDFOutput(FileIOFrame):
         self.path.set(filename)
 
 
-if __name__ == "__main__":
+def start():
+    """
+    Start the graphical user interface.
+    """
     gui = GUI()
     gui.show()
+
+
+if __name__ == "__main__":
+    start()

@@ -39,5 +39,11 @@ file](requirements.txt).
 
 ## Usage
 
-See `bookfolder --help` for information about available commands and their
+### Windowed mode
+
+After installing, you can start the program with command `bookfolder`.
+
+### Command-line use
+
+See `bookfolder-cli --help` for information about available commands and their
 invocation.
