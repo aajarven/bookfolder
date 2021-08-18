@@ -2,3 +2,5 @@
 *.pyc
 .coverage
 tmp
+dist
+*.egg-info
